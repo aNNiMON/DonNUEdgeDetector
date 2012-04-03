@@ -1,0 +1,91 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Русский (Россия) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
+LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU1 MENU
+BEGIN
+    POPUP "&Камера"
+    BEGIN
+        MENUITEM "&Захват кадра\tF10",          ID_SNAPSHOT
+        MENUITEM "У&стройство",                 ID_DEVICE
+        MENUITEM SEPARATOR
+        MENUITEM "Вы&ход\tAlt+F4",              ID_EXIT
+    END
+    POPUP "&Вид"
+    BEGIN
+        MENUITEM "&Робертс\t1",                 ID_OP_ROBERTS
+        MENUITEM "&Прюитт\t2",                  ID_OP_PREWITT
+        MENUITEM "&Собель\t3",                  ID_OP_SOBEL
+        MENUITEM SEPARATOR
+        MENUITEM "&Оригинал\tCtrl+O",           ID_EF_ORIGINAL
+        MENUITEM "О&ттенки серого\tCtrl+G",     ID_EF_GRAYSCALE
+        MENUITEM "&Негатив\tCtrl+I",            ID_EF_INVERSE
+    END
+    POPUP "&Справка"
+    BEGIN
+        MENUITEM "&О программе",                ID_ABOUT
+    END
+END
+
+#endif    // Русский (Россия) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <commctrl.h>
+#include "EdgeDetector.h"
 #include "WindowClass.h"
 #include "Window.h"
 #include "resource.h"
@@ -15,7 +16,8 @@ void setEffectTypes(HWND hWnd);
 
 /** Состояния эффектов (включен / выключен) */
 bool effectsEnabled[EFFECTS_END - EFFECTS_START + 1];
-
+/** Детектор границ */
+EdgeDetector detector;
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow) {
 	// Регистрация класса окна
@@ -31,6 +33,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	Window wnd = Window();
 	wnd.setClassName(wClass.getClassName());
 	wnd.setInstance(hInstance);
+	wnd.setBounds(CW_USEDEFAULT, CW_USEDEFAULT, 400, 300);
 	wnd.setTitle(wClass.getClassName());
 	if (!wnd.createWindow()) return 0;
 	
@@ -42,8 +45,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	UpdateWindow(wnd.getWindow());
 	DrawMenuBar(wnd.getWindow());
 
+	detector.init(CV_CAP_ANY);
+
 	MSG msg;
 	while(GetMessage(&msg, NULL, 0, 0)) {
+		detector.update();
 		if(!TranslateAccelerator(wnd.getWindow(), hAccel, &msg)) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
@@ -62,10 +68,7 @@ LRESULT CALLBACK mainWindowProcedure(HWND hWnd, UINT message, UINT wParam, LONG 
 		setOperatorType(hWnd, ID_OP_ROBERTS);
 		setEffectTypes(hWnd);
 		break;
-
-	//case WM_PAINT:
-	//	break;
-
+		
 	case WM_COMMAND:
 		menuCommandSelected(hWnd, wParam);
 		break;
@@ -87,13 +90,17 @@ void menuCommandSelected(HWND hWnd, UINT wParam) {
 	UINT command = LOWORD(wParam);
 	switch(command) {
 
+	case ID_SNAPSHOT:
+		detector.snapshot();
+		break;
+
+	case ID_DEVICE:
+		break;
+
 	case ID_OP_ROBERTS:
 	case ID_OP_PREWITT:
 	case ID_OP_SOBEL:
 		setOperatorType(hWnd, command);
-		break;
-
-	case ID_SNAPSHOT:
 		break;
 
 	case ID_EF_ORIGINAL:
@@ -101,6 +108,9 @@ void menuCommandSelected(HWND hWnd, UINT wParam) {
 	case ID_EF_INVERSE:
 		effectsEnabled[EFFECTS_END - command] = !effectsEnabled[EFFECTS_END - command];
 		setEffectTypes(hWnd);
+		break;
+
+	case ID_ABOUT:
 		break;
 
 	case ID_EXIT:
@@ -125,7 +135,9 @@ void setOperatorType(HWND hWnd, UINT type) {
 void setEffectTypes(HWND hWnd) {
 	HMENU viewMenu = GetSubMenu(GetMenu(hWnd), 1);
 	for(int i = EFFECTS_START; i <= EFFECTS_END; i++) {
-		ULONG check = effectsEnabled[EFFECTS_END - i] ? MF_CHECKED : MF_UNCHECKED;
+		int id = EFFECTS_END - i;
+		ULONG check = effectsEnabled[id] ? MF_CHECKED : MF_UNCHECKED;
 		CheckMenuItem( viewMenu, i, check);
+		detector.setEffects(i, effectsEnabled[id]);
 	}
 }

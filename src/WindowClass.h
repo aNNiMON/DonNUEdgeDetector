@@ -3,7 +3,7 @@
 #include <windows.h>
 
 /**
- * РљР»Р°СЃСЃ СЂРµРіРёСЃС‚СЂР°С†РёРё WNDCLASS
+ * Класс регистрации WNDCLASS
  * @author aNNiMON
  */
 class WindowClass {

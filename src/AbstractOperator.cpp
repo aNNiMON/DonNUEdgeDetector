@@ -5,17 +5,23 @@
  */
 IplImage* AbstractOperator::applyOperator(IplImage* sourceImage) {
 	IplImage* horizontalEdges = cvCloneImage(sourceImage);
-	CvMat* horizontalMatrix = getHorizontalKernelMatrix();
 	cvFilter2D(sourceImage, horizontalEdges, horizontalMatrix, cvPoint(-1,-1));
-	cvReleaseMat(&horizontalMatrix);
 
 	IplImage* verticalEdges = cvCloneImage(sourceImage);
-	CvMat* verticalMatrix = getVerticalKernelMatrix();
 	cvFilter2D(sourceImage, verticalEdges, verticalMatrix, cvPoint(-1,-1));
-	cvReleaseMat(&verticalMatrix);
 
-	sourceImage = applyGradient(horizontalEdges, verticalEdges);
-	return sourceImage;
+	horizontalEdges = applyGradient(horizontalEdges, verticalEdges);
+	cvReleaseImage(&sourceImage);
+	cvReleaseImage(&verticalEdges);
+	return horizontalEdges;
+}
+
+/**
+ * Создать матрицы свертки.
+ **/
+void AbstractOperator::createMatrix() {
+	createHorizontalKernelMatrix();
+	createVerticalKernelMatrix();
 }
 
 /**
@@ -25,7 +31,7 @@ CvMat* AbstractOperator::setupKernelMatrixFromArray(CvMat* kernel, float* matrix
 	int w = kernel->width;
 	for (int y = 0; y < kernel->height; y++) {
 		for (int x = 0; x < w; x++) {
-			cvSet2D(kernel, 0, 0, cvRealScalar(matrix[y*w+x]));
+			cvSet2D(kernel, y, x, cvRealScalar(matrix[y*w+x]));
 		}
 	}
 	return kernel;
@@ -40,6 +46,7 @@ IplImage* AbstractOperator::applyGradient(IplImage* horiz, IplImage* vert) {
 			// Вычисляем значения для каждого канала
 			for (int i = 0; i < ch; i++) {
 				pHor[ch*x+i] = calculateGradient(pHor[ch*x+i],  pVert[ch*x+i]);
+				if (pHor[ch*x+i] > 255) pHor[ch*x+i] = 255;
 			}
 		}
 	}

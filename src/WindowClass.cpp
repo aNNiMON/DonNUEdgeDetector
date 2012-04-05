@@ -27,7 +27,6 @@ bool WindowClass::registerClass() {
  */
 void WindowClass::setToDefault() {
 	setStyle( CS_HREDRAW | CS_VREDRAW );
-	setIconType(IDI_APPLICATION);
 	setCursorType(IDC_ARROW);
 	setBackgroundBrushColor(WHITE_BRUSH);
 	setMenuName(L"MainMenu");

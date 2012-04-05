@@ -4,19 +4,19 @@
 class RobertsOperator :	public AbstractOperator {
 
 public:
-	CvMat* getHorizontalKernelMatrix() {
+	void createHorizontalKernelMatrix() {
 		float matrix[9] = {0, 0, 0,
 						   0, 1, 0,
 						   0, 0,-1 };
-		CvMat* kernel = cvCreateMat(3, 3, CV_32FC1);
-		return setupKernelMatrixFromArray(kernel, matrix);
+		horizontalMatrix = cvCreateMat(3, 3, CV_32FC1);
+		horizontalMatrix = setupKernelMatrixFromArray(horizontalMatrix, matrix);
 	}
 
-	CvMat* getVerticalKernelMatrix() {
+	void createVerticalKernelMatrix() {
 		float matrix[9] = {0, 0, 0,
 						   0, 0, 1,
 						   0,-1, 0 };
-		CvMat* kernel = cvCreateMat(3, 3, CV_32FC1);
-		return setupKernelMatrixFromArray(kernel, matrix);
+		verticalMatrix = cvCreateMat(3, 3, CV_32FC1);
+		verticalMatrix = setupKernelMatrixFromArray(verticalMatrix, matrix);
 	}
 };

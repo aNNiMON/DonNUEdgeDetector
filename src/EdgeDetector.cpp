@@ -8,6 +8,7 @@ EdgeDetector::EdgeDetector() {}
  */
 EdgeDetector::~EdgeDetector() {
 	cvReleaseCapture(&camera);
+	cvReleaseImage(&resultFrame);
 	cvDestroyAllWindows();
 	delete edgeDetectOperator;
 }
@@ -27,20 +28,25 @@ void EdgeDetector::init(int deviceNumber) {
 void EdgeDetector::update() {
 	if (camera == NULL) return;
 
+	cvWaitKey(33);
+
 	cameraFrame = cvQueryFrame(camera);
-	resultFrame = cvCloneImage(cameraFrame);
+	cvReleaseImage(&resultFrame);
 	
 	if (isGrayScaleEffect) {
-		IplImage* tempFrame = cvCloneImage(resultFrame);
+		IplImage* tempFrame = cvCloneImage(cameraFrame);
 		resultFrame = cvCreateImage(imageSize, cameraFrame->depth, CV_LOAD_IMAGE_GRAYSCALE);
 		cvCvtColor(tempFrame, resultFrame, CV_BGR2GRAY);
-	}
+		cvReleaseImage(&tempFrame);
+	} else resultFrame = cvCloneImage(cameraFrame);
+
 	if (!isOriginalEffect) {
 		resultFrame = edgeDetectOperator->applyOperator(resultFrame);
 	}
 	if (isInverseEffect) {
 		IplImage* tempFrame = cvCloneImage(resultFrame);
 		cvNot(tempFrame, resultFrame);
+		cvReleaseImage(&tempFrame);
 	}
 
 	cvShowImage(getWindowName(), resultFrame);
@@ -86,11 +92,11 @@ void EdgeDetector::setOperator(UINT typeOperator) {
 			edgeDetectOperator = new SobelOperator();
 			break;
 	}
+	edgeDetectOperator->createMatrix();
 }
 
 
 CvCapture* EdgeDetector::initCamera(int deviceNumber) {
-	//return cvCreateCameraCapture(deviceNumber);
 	return cvCaptureFromCAM(deviceNumber);
 }
 

@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <commctrl.h>
+#include <process.h>
 #include "EdgeDetector.h"
 #include "WindowClass.h"
 #include "Window.h"
@@ -10,6 +11,7 @@
 
 LRESULT CALLBACK mainWindowProcedure(HWND, UINT, UINT, LONG);
 void menuCommandSelected(HWND hWnd, UINT wParam);
+void setPause(HWND hWnd, bool pause);
 void setOperatorType(HWND hWnd, UINT type);
 void setEffectTypes(HWND hWnd);
 
@@ -18,6 +20,7 @@ bool effectsEnabled[EFFECTS_END - EFFECTS_START + 1];
 /** Детектор границ */
 EdgeDetector detector;
 
+bool pause, runningThread;
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow) {
 	// Регистрация класса окна
@@ -25,6 +28,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	wClass.setToDefault();
 	wClass.setInstance(hInstance);
 	wClass.setClassName(L"DonNUEdgeDetector");
+	wClass.setIconType(MAKEINTRESOURCE(IDI_ICON1));
 	wClass.setMenuName(MAKEINTRESOURCE(IDR_MAINMENU));
 	wClass.setWindowProcedure(mainWindowProcedure);
 	if (!wClass.registerClass()) return 0;
@@ -49,7 +53,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 
 	MSG msg;
 	while(GetMessage(&msg, NULL, 0, 0)) {
-		detector.update();
 		if(!TranslateAccelerator(wnd.getWindow(), hAccel, &msg)) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
@@ -58,6 +61,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	return msg.wParam;
 }
 
+VOID edgeDetectingThread (PVOID pvoid) {
+	 while (runningThread) {
+		 if (!pause) detector.update();
+	 }
+	 _endthread();
+}
+
+
 /**
  * Оконная процедура.
  */
@@ -65,8 +76,11 @@ LRESULT CALLBACK mainWindowProcedure(HWND hWnd, UINT message, UINT wParam, LONG 
 	switch(message)	{
 
 	case WM_CREATE:
+		runningThread = true;
+		setPause(hWnd, false);
 		setOperatorType(hWnd, ID_OP_ROBERTS);
 		setEffectTypes(hWnd);
+		_beginthread(edgeDetectingThread, 0, NULL) ;
 		break;
 		
 	case WM_COMMAND:
@@ -74,6 +88,7 @@ LRESULT CALLBACK mainWindowProcedure(HWND hWnd, UINT message, UINT wParam, LONG 
 		break;
 
 	case WM_DESTROY:
+		runningThread = false;
 		PostQuitMessage(0);
 		break;
 
@@ -81,6 +96,27 @@ LRESULT CALLBACK mainWindowProcedure(HWND hWnd, UINT message, UINT wParam, LONG 
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 	return 0;
+}
+
+/**
+ * Обработка сообщений диалогового окна "О программе"
+ */
+BOOL CALLBACK AboutDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+	switch(message) {
+
+	case WM_COMMAND:
+		switch(LOWORD(wParam)) {
+		case IDC_GO_TO_GIT:
+			ShellExecuteA(GetParent(hDlg), "open", "https://github.com/aNNiMON/DonNUEdgeDetector", NULL, NULL, SW_MAXIMIZE);
+			return TRUE;
+		case IDC_OK:
+			EndDialog(hDlg, 0);
+			return TRUE;
+		}
+		break;
+	}
+
+	return FALSE;
 }
 
 /**
@@ -94,7 +130,8 @@ void menuCommandSelected(HWND hWnd, UINT wParam) {
 		detector.snapshot();
 		break;
 
-	case ID_DEVICE:
+	case ID_PAUSE:
+		setPause(hWnd, !pause);
 		break;
 
 	case ID_OP_ROBERTS:
@@ -111,6 +148,7 @@ void menuCommandSelected(HWND hWnd, UINT wParam) {
 		break;
 
 	case ID_ABOUT:
+		DialogBox(NULL, MAKEINTRESOURCE(IDD_ABOUT_DIALOG), hWnd, (DLGPROC)AboutDialogProc);
 		break;
 
 	case ID_EXIT:
@@ -119,6 +157,15 @@ void menuCommandSelected(HWND hWnd, UINT wParam) {
 	}
 }
 
+/**
+ * Приостановить работу детектора граней.
+ */
+void setPause(HWND hWnd, bool _pause) {
+	pause = _pause;
+	HMENU cameraMenu = GetSubMenu(GetMenu(hWnd), 0);
+	ULONG check = pause ? MF_CHECKED : MF_UNCHECKED;
+	CheckMenuItem(cameraMenu, 1, check);
+}
 
 /**
  * Установить тип оператора (ID_OP_ROBERTS, ID_OP_SOBEL, ID_OP_PREWITT);

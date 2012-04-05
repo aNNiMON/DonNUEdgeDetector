@@ -8,19 +8,19 @@
 #pragma comment(lib,"comctl32.lib")
 
 
-// прототипы
 LRESULT CALLBACK mainWindowProcedure(HWND, UINT, UINT, LONG);
 void menuCommandSelected(HWND hWnd, UINT wParam);
 void setOperatorType(HWND hWnd, UINT type);
 void setEffectTypes(HWND hWnd);
 
-/** Состояния эффектов (включен / выключен) */
+/** РЎРѕСЃС‚РѕСЏРЅРёСЏ СЌС„С„РµРєС‚РѕРІ (РІРєР»СЋС‡РµРЅ / РІС‹РєР»СЋС‡РµРЅ) */
 bool effectsEnabled[EFFECTS_END - EFFECTS_START + 1];
-/** Детектор границ */
+/** Р”РµС‚РµРєС‚РѕСЂ РіСЂР°РЅРёС† */
 EdgeDetector detector;
 
+
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow) {
-	// Регистрация класса окна
+	// Р РµРіРёСЃС‚СЂР°С†РёСЏ РєР»Р°СЃСЃР° РѕРєРЅР°
 	WindowClass wClass = WindowClass();
 	wClass.setToDefault();
 	wClass.setInstance(hInstance);
@@ -29,7 +29,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	wClass.setWindowProcedure(mainWindowProcedure);
 	if (!wClass.registerClass()) return 0;
 
-	// Создание нового окна
+	// РЎРѕР·РґР°РЅРёРµ РЅРѕРІРѕРіРѕ РѕРєРЅР°
 	Window wnd = Window();
 	wnd.setClassName(wClass.getClassName());
 	wnd.setInstance(hInstance);
@@ -37,10 +37,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	wnd.setTitle(wClass.getClassName());
 	if (!wnd.createWindow()) return 0;
 	
-	// Загрузка таблицы акселераторов
+	// Р—Р°РіСЂСѓР·РєР° С‚Р°Р±Р»РёС†С‹ Р°РєСЃРµР»РµСЂР°С‚РѕСЂРѕРІ
 	HACCEL hAccel = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_MAINACCELERATOR));
 
-	// Отображение окна
+	// РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РѕРєРЅР°
 	ShowWindow(wnd.getWindow(), nCmdShow);
 	UpdateWindow(wnd.getWindow());
 	DrawMenuBar(wnd.getWindow());
@@ -59,7 +59,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 }
 
 /**
- * Оконная процедура.
+ * РћРєРѕРЅРЅР°СЏ РїСЂРѕС†РµРґСѓСЂР°.
  */
 LRESULT CALLBACK mainWindowProcedure(HWND hWnd, UINT message, UINT wParam, LONG lParam) {
 	switch(message)	{
@@ -84,7 +84,7 @@ LRESULT CALLBACK mainWindowProcedure(HWND hWnd, UINT message, UINT wParam, LONG 
 }
 
 /**
- * Обработка события выбранного пункта меню.
+ * РћР±СЂР°Р±РѕС‚РєР° СЃРѕР±С‹С‚РёСЏ РІС‹Р±СЂР°РЅРЅРѕРіРѕ РїСѓРЅРєС‚Р° РјРµРЅСЋ.
  */
 void menuCommandSelected(HWND hWnd, UINT wParam) {
 	UINT command = LOWORD(wParam);
@@ -121,16 +121,17 @@ void menuCommandSelected(HWND hWnd, UINT wParam) {
 
 
 /**
- * Установить тип оператора (ID_OP_ROBERTS, ID_OP_SOBEL, ID_OP_PREWITT);
+ * РЈСЃС‚Р°РЅРѕРІРёС‚СЊ С‚РёРї РѕРїРµСЂР°С‚РѕСЂР° (ID_OP_ROBERTS, ID_OP_SOBEL, ID_OP_PREWITT);
  */
 void setOperatorType(HWND hWnd, UINT type) {
 	HMENU viewMenu = GetSubMenu(GetMenu(hWnd), 1);
 	CheckMenuRadioItem( viewMenu, OPERATORS_START, OPERATORS_END,
 						type, MF_BYCOMMAND );
+	detector.setOperator(type);
 }
 
 /**
- * Установить тип эффекта (ID_EF_ORIGINAL, ID_EF_GRAYSCALE, ID_EF_INVERSE)
+ * РЈСЃС‚Р°РЅРѕРІРёС‚СЊ С‚РёРї СЌС„С„РµРєС‚Р° (ID_EF_ORIGINAL, ID_EF_GRAYSCALE, ID_EF_INVERSE)
  */
 void setEffectTypes(HWND hWnd) {
 	HMENU viewMenu = GetSubMenu(GetMenu(hWnd), 1);

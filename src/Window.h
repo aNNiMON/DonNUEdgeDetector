@@ -4,7 +4,7 @@
 #include "WindowClass.h"
 
 /**
- * Класс создания окна
+ * РљР»Р°СЃСЃ СЃРѕР·РґР°РЅРёСЏ РѕРєРЅР°
  * @author aNNiMON
  */
 class Window {

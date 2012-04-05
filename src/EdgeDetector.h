@@ -3,9 +3,13 @@
 #include <cv.h>
 #include <highgui.h>
 #include "resource.h"
+#include "RobertsOperator.h"
+#include "PrewittOperator.h"
+#include "SobelOperator.h"
+
 
 /**
- * Класс выделения границ.
+ * РљР»Р°СЃСЃ РІС‹РґРµР»РµРЅРёСЏ РіСЂР°РЅРёС†.
  * @author aNNiMON
  */
 class EdgeDetector {
@@ -18,15 +22,17 @@ public:
 	void snapshot();
 
 	void setEffects(UINT effect, bool enabled);
+	void setOperator(UINT typeOperator);
 
 private:
-	// инициализация
+	// РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ
 	CvCapture* initCamera(int deviceNumber);
 	CvSize getCameraImageSize(CvCapture* camera);
 
 	const char* getWindowName();
 
 	bool isOriginalEffect, isGrayScaleEffect, isInverseEffect;
+	AbstractOperator* edgeDetectOperator;
 	CvCapture* camera;
 	CvSize imageSize;
 	IplImage *cameraFrame, *resultFrame;

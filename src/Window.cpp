@@ -1,8 +1,8 @@
 #include "Window.h"
 
 /**
- * Êîíñòðóêòîð.
- * Çàäà¸ò ñòèëü è ðàçìåðû îêíà ïî óìî÷àíèþ.
+ * ÐšÐ¾Ð½ÑÑ‚Ñ€ÑƒÐºÑ‚Ð¾Ñ€.
+ * Ð—Ð°Ð´Ð°Ñ‘Ñ‚ ÑÑ‚Ð¸Ð»ÑŒ Ð¸ Ñ€Ð°Ð·Ð¼ÐµÑ€Ñ‹ Ð¾ÐºÐ½Ð° Ð¿Ð¾ ÑƒÐ¼Ð¾Ñ‡Ð°Ð½Ð¸ÑŽ.
  */
 Window::Window() {
 	x = CW_USEDEFAULT;
@@ -13,21 +13,21 @@ Window::Window() {
 }
 
 /**
- * Óñòàíîâêà êëàññà îêíà.
+ * Ð£ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° ÐºÐ»Ð°ÑÑÐ° Ð¾ÐºÐ½Ð°.
  */
 void Window::setClassName(LPCWSTR className) {
 	this->className = className;
 }
 
 /**
- * Ïîëó÷åíèå êëàññà îêíà.
+ * ÐŸÐ¾Ð»ÑƒÑ‡ÐµÐ½Ð¸Ðµ ÐºÐ»Ð°ÑÑÐ° Ð¾ÐºÐ½Ð°.
  */
 LPCWSTR Window::getClassName() {
 	return className;
 }
 
 /**
- * Óñòàíîâêà ðàçìåðà è ïîëîæåíèÿ îêíà.
+ * Ð£ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ñ€Ð°Ð·Ð¼ÐµÑ€Ð° Ð¸ Ð¿Ð¾Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ Ð¾ÐºÐ½Ð°.
  */
 void Window::setBounds(int x, int y, int w, int h) {
 	this->x = x;
@@ -37,30 +37,30 @@ void Window::setBounds(int x, int y, int w, int h) {
 }
 
 /**
- * Óñòàíîâêà äåñêðèïòîðà ïðèëîæåíèÿ.
+ * Ð£ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ð´ÐµÑÐºÑ€Ð¸Ð¿Ñ‚Ð¾Ñ€Ð° Ð¿Ñ€Ð¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ.
  */
 void Window::setInstance(HINSTANCE hInstance) {
 	this->hInstance = hInstance;
 }
 
 /**
- * Óñòàíîâêà ñòèëÿ îêíà.
+ * Ð£ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° ÑÑ‚Ð¸Ð»Ñ Ð¾ÐºÐ½Ð°.
  */
 void Window::setStyle(int style) {
 	this->style = style;
 }
 
 /**
- * Çàäàíèå çàãîëîâêà îêíà.
+ * Ð—Ð°Ð´Ð°Ð½Ð¸Ðµ Ð·Ð°Ð³Ð¾Ð»Ð¾Ð²ÐºÐ° Ð¾ÐºÐ½Ð°.
  */
 void Window::setTitle(LPCWSTR title) {
 	this->title = title;
 }
 
 /**
- * Ñîçäàíèå îêíà.
- * Âûçûâàåòñÿ ïîñëå çàäàíèÿ ïàðàìåòðîâ.
- * return true - îêíî óñïåøíî ñîçäàíî, false - ïðîèçîøëà îøèáêà.
+ * Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð¾ÐºÐ½Ð°.
+ * Ð’Ñ‹Ð·Ñ‹Ð²Ð°ÐµÑ‚ÑÑ Ð¿Ð¾ÑÐ»Ðµ Ð·Ð°Ð´Ð°Ð½Ð¸Ñ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ð¾Ð².
+ * return true - Ð¾ÐºÐ½Ð¾ ÑƒÑÐ¿ÐµÑˆÐ½Ð¾ ÑÐ¾Ð·Ð´Ð°Ð½Ð¾, false - Ð¿Ñ€Ð¾Ð¸Ð·Ð¾ÑˆÐ»Ð° Ð¾ÑˆÐ¸Ð±ÐºÐ°.
  */
 bool Window::createWindow() {
 	hWnd = CreateWindow(
@@ -71,14 +71,14 @@ bool Window::createWindow() {
 	);
 
 	if(!hWnd) {
-		MessageBox(NULL, L"Íåâîçìîæíî ñîçäàòü îêíî", L"Îøèáêà", MB_OK);
+		MessageBox(NULL, L"ÐÐµÐ²Ð¾Ð·Ð¼Ð¾Ð¶Ð½Ð¾ ÑÐ¾Ð·Ð´Ð°Ñ‚ÑŒ Ð¾ÐºÐ½Ð¾", L"ÐžÑˆÐ¸Ð±ÐºÐ°", MB_OK);
 		return false;
 	}
 	return true;
 }
 
 /**
- * Ïîëó÷åíèå äåñêðèïòîðà îêíà.
+ * ÐŸÐ¾Ð»ÑƒÑ‡ÐµÐ½Ð¸Ðµ Ð´ÐµÑÐºÑ€Ð¸Ð¿Ñ‚Ð¾Ñ€Ð° Ð¾ÐºÐ½Ð°.
  */
 HWND Window::getWindow() {
 	return this->hWnd;

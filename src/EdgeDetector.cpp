@@ -3,16 +3,17 @@
 EdgeDetector::EdgeDetector() {}
 
 /**
- * Деструктор.
- * Закрытие окон созданных при помощи OpenCV и освобождение ресурсов.
+ * Р”РµСЃС‚СЂСѓРєС‚РѕСЂ.
+ * Р—Р°РєСЂС‹С‚РёРµ РѕРєРѕРЅ СЃРѕР·РґР°РЅРЅС‹С… РїСЂРё РїРѕРјРѕС‰Рё OpenCV Рё РѕСЃРІРѕР±РѕР¶РґРµРЅРёРµ СЂРµСЃСѓСЂСЃРѕРІ.
  */
 EdgeDetector::~EdgeDetector() {
 	cvReleaseCapture(&camera);
 	cvDestroyAllWindows();
+	delete edgeDetectOperator;
 }
 
 /**
- * Инициализация камеры, окон и первоначальных параметров.
+ * РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РєР°РјРµСЂС‹, РѕРєРѕРЅ Рё РїРµСЂРІРѕРЅР°С‡Р°Р»СЊРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ.
  */
 void EdgeDetector::init(int deviceNumber) {
 	camera = initCamera(deviceNumber);
@@ -21,19 +22,24 @@ void EdgeDetector::init(int deviceNumber) {
 }
 
 /**
- * Обновление выводимой информации.
+ * РћР±РЅРѕРІР»РµРЅРёРµ РІС‹РІРѕРґРёРјРѕР№ РёРЅС„РѕСЂРјР°С†РёРё.
  */
 void EdgeDetector::update() {
 	if (camera == NULL) return;
-	IplImage *tempFrame;
+
 	cameraFrame = cvQueryFrame(camera);
 	resultFrame = cvCloneImage(cameraFrame);
+	
 	if (isGrayScaleEffect) {
+		IplImage* tempFrame = cvCloneImage(resultFrame);
 		resultFrame = cvCreateImage(imageSize, cameraFrame->depth, CV_LOAD_IMAGE_GRAYSCALE);
-		cvCvtColor(cameraFrame, resultFrame, CV_BGR2GRAY);
+		cvCvtColor(tempFrame, resultFrame, CV_BGR2GRAY);
+	}
+	if (!isOriginalEffect) {
+		resultFrame = edgeDetectOperator->applyOperator(resultFrame);
 	}
 	if (isInverseEffect) {
-		tempFrame = cvCloneImage(resultFrame);
+		IplImage* tempFrame = cvCloneImage(resultFrame);
 		cvNot(tempFrame, resultFrame);
 	}
 
@@ -41,7 +47,7 @@ void EdgeDetector::update() {
 }
 
 /**
- * Сохранить скриншот результирующего фрейма.
+ * РЎРѕС…СЂР°РЅРёС‚СЊ СЃРєСЂРёРЅС€РѕС‚ СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РµРіРѕ С„СЂРµР№РјР°.
  */
 void EdgeDetector::snapshot() {
 	if (resultFrame == NULL) return;
@@ -49,7 +55,7 @@ void EdgeDetector::snapshot() {
 }
 
 /**
- * Выставить состояние эффекта.
+ * Р’С‹СЃС‚Р°РІРёС‚СЊ СЃРѕСЃС‚РѕСЏРЅРёРµ СЌС„С„РµРєС‚Р°.
  */
 void EdgeDetector::setEffects(UINT effect, bool enabled) {
 	switch(LOWORD(effect)) {
@@ -65,6 +71,23 @@ void EdgeDetector::setEffects(UINT effect, bool enabled) {
 	}
 }
 
+/**
+ * РџРµСЂРµРєР»СЋС‡РµРЅРёРµ РѕРїРµСЂР°С‚РѕСЂР° РїРѕРёСЃРєР° РіСЂР°РЅРµР№.
+ */
+void EdgeDetector::setOperator(UINT typeOperator) {
+	switch(LOWORD(typeOperator)) {
+		case ID_OP_ROBERTS:
+			edgeDetectOperator = new RobertsOperator();
+			break;
+		case ID_OP_PREWITT:
+			edgeDetectOperator = new PrewittOperator();
+			break;
+		case ID_OP_SOBEL:
+			edgeDetectOperator = new SobelOperator();
+			break;
+	}
+}
+
 
 CvCapture* EdgeDetector::initCamera(int deviceNumber) {
 	//return cvCreateCameraCapture(deviceNumber);
@@ -72,11 +95,11 @@ CvCapture* EdgeDetector::initCamera(int deviceNumber) {
 }
 
 CvSize EdgeDetector::getCameraImageSize(CvCapture* camera) {
-	double width = cvGetCaptureProperty(camera, CV_CAP_PROP_FRAME_WIDTH);
-	double height = cvGetCaptureProperty(camera, CV_CAP_PROP_FRAME_HEIGHT);
+	int width = (int) cvGetCaptureProperty(camera, CV_CAP_PROP_FRAME_WIDTH);
+	int height = (int) cvGetCaptureProperty(camera, CV_CAP_PROP_FRAME_HEIGHT);
 	return cvSize(width, height);
 }
 
 const char* EdgeDetector::getWindowName() {
-	return "Окно просмотра";
+	return "РћРєРЅРѕ РїСЂРѕСЃРјРѕС‚СЂР°";
 }

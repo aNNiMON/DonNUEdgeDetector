@@ -1,8 +1,8 @@
 #include "WindowClass.h"
 
 /**
- * Конструктор.
- * Задаёт параметры по умочанию.
+ * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ.
+ * Р—Р°РґР°С‘С‚ РїР°СЂР°РјРµС‚СЂС‹ РїРѕ СѓРјРѕС‡Р°РЅРёСЋ.
  */
 WindowClass::WindowClass() {
 	WndClass.cbClsExtra = 0;
@@ -11,19 +11,19 @@ WindowClass::WindowClass() {
 }
 
 /**
- * Регистрация класса окна.
- * return true - класс зарегистрирован, false - произошла ошибка.
+ * Р РµРіРёСЃС‚СЂР°С†РёСЏ РєР»Р°СЃСЃР° РѕРєРЅР°.
+ * return true - РєР»Р°СЃСЃ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅ, false - РїСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°.
  */
 bool WindowClass::registerClass() {
 	if(!RegisterClass(&WndClass)) {
-		MessageBox(NULL, L"Невозможно зарегистрировать класс", L"Ошибка", MB_OK);
+		MessageBox(NULL, L"РќРµРІРѕР·РјРѕР¶РЅРѕ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°С‚СЊ РєР»Р°СЃСЃ", L"РћС€РёР±РєР°", MB_OK);
 		return false;
 	}
 	return true;
 }
 
 /**
- * Задать параметры по умочанию.
+ * Р—Р°РґР°С‚СЊ РїР°СЂР°РјРµС‚СЂС‹ РїРѕ СѓРјРѕС‡Р°РЅРёСЋ.
  */
 void WindowClass::setToDefault() {
 	setStyle( CS_HREDRAW | CS_VREDRAW );
@@ -34,77 +34,77 @@ void WindowClass::setToDefault() {
 }
 
 /**
- * Установка цвета кисти для фона окна.
+ * РЈСЃС‚Р°РЅРѕРІРєР° С†РІРµС‚Р° РєРёСЃС‚Рё РґР»СЏ С„РѕРЅР° РѕРєРЅР°.
  */
 void WindowClass::setBackgroundBrushColor(int color) {
 	WndClass.hbrBackground = (HBRUSH) GetStockObject(color);
 }
 
 /**
- * Установка имени класса.
+ * РЈСЃС‚Р°РЅРѕРІРєР° РёРјРµРЅРё РєР»Р°СЃСЃР°.
  */
 void WindowClass::setClassName(LPCWSTR className) {
 	WndClass.lpszClassName = className;
 }
 
 /**
- * Установка курсора.
+ * РЈСЃС‚Р°РЅРѕРІРєР° РєСѓСЂСЃРѕСЂР°.
  */
 void WindowClass::setCursor(HCURSOR hCursor) {
 	WndClass.hCursor = hCursor;
 }
 
 /**
- * Загрузка и установка курсора по его типу.
+ * Р—Р°РіСЂСѓР·РєР° Рё СѓСЃС‚Р°РЅРѕРІРєР° РєСѓСЂСЃРѕСЂР° РїРѕ РµРіРѕ С‚РёРїСѓ.
  */
 void WindowClass::setCursorType(LPCWSTR cursorType) {
 	setCursor( LoadCursor(NULL, cursorType) );
 }
 
 /**
- * Установка иконки.
+ * РЈСЃС‚Р°РЅРѕРІРєР° РёРєРѕРЅРєРё.
  */
 void WindowClass::setIcon(HICON hIcon) {
 	WndClass.hIcon = hIcon;
 }
 
 /**
- * Загрузка и установка иконки по её типу.
+ * Р—Р°РіСЂСѓР·РєР° Рё СѓСЃС‚Р°РЅРѕРІРєР° РёРєРѕРЅРєРё РїРѕ РµС‘ С‚РёРїСѓ.
  */
 void WindowClass::setIconType(LPCWSTR iconType) {
 	setIcon( LoadIcon(NULL, iconType) );
 }
 
 /**
- * Установка дескриптора приложения.
+ * РЈСЃС‚Р°РЅРѕРІРєР° РґРµСЃРєСЂРёРїС‚РѕСЂР° РїСЂРёР»РѕР¶РµРЅРёСЏ.
  */
 void WindowClass::setInstance(HINSTANCE hInstance) {
 	WndClass.hInstance = hInstance;
 }
 
 /**
- * Задать имя меню.
+ * Р—Р°РґР°С‚СЊ РёРјСЏ РјРµРЅСЋ.
  */
 void WindowClass::setMenuName(LPCWSTR menuName) {
 	WndClass.lpszMenuName = menuName;
 }
 
 /**
- * Установка стиля.
+ * РЈСЃС‚Р°РЅРѕРІРєР° СЃС‚РёР»СЏ.
  */
 void WindowClass::setStyle(int style) {
 	WndClass.style = style;
 }
 
 /**
- * Задание оконной процедуры.
+ * Р—Р°РґР°РЅРёРµ РѕРєРѕРЅРЅРѕР№ РїСЂРѕС†РµРґСѓСЂС‹.
  */
 void WindowClass::setWindowProcedure(WNDPROC procedure) {
 	WndClass.lpfnWndProc = procedure;
 }
 
 /**
- * Получить имя класса.
+ * РџРѕР»СѓС‡РёС‚СЊ РёРјСЏ РєР»Р°СЃСЃР°.
  */
 LPCWSTR WindowClass::getClassName() {
 	return WndClass.lpszClassName;

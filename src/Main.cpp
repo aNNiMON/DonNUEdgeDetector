@@ -49,7 +49,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	UpdateWindow(wnd.getWindow());
 	DrawMenuBar(wnd.getWindow());
 
-	detector.init(CV_CAP_ANY);
+	// Парсинг командной строки
+	int deviceNumber = (lpszCmdParam == "") ? 0 : atoi(lpszCmdParam);
+
+	// Инициализация детектора граней
+	detector.init(deviceNumber);
 
 	MSG msg;
 	while(GetMessage(&msg, NULL, 0, 0)) {
@@ -134,19 +138,6 @@ void menuCommandSelected(HWND hWnd, UINT wParam) {
 		setPause(hWnd, !pause);
 		break;
 
-	case ID_OP_ROBERTS:
-	case ID_OP_PREWITT:
-	case ID_OP_SOBEL:
-		setOperatorType(hWnd, command);
-		break;
-
-	case ID_EF_ORIGINAL:
-	case ID_EF_GRAYSCALE:
-	case ID_EF_INVERSE:
-		effectsEnabled[EFFECTS_END - command] = !effectsEnabled[EFFECTS_END - command];
-		setEffectTypes(hWnd);
-		break;
-
 	case ID_ABOUT:
 		DialogBox(NULL, MAKEINTRESOURCE(IDD_ABOUT_DIALOG), hWnd, (DLGPROC)AboutDialogProc);
 		break;
@@ -154,6 +145,14 @@ void menuCommandSelected(HWND hWnd, UINT wParam) {
 	case ID_EXIT:
 		SendMessage(hWnd, WM_CLOSE, NULL, NULL);
 		break;
+
+	default:
+		if ( (command >= OPERATORS_START) && (command <= OPERATORS_END) ) {
+			setOperatorType(hWnd, command);
+		} else if ( (command >= EFFECTS_START) && (command <= EFFECTS_END) ) {
+			effectsEnabled[EFFECTS_END - command] = !effectsEnabled[EFFECTS_END - command];
+			setEffectTypes(hWnd);
+		}
 	}
 }
 
@@ -164,7 +163,7 @@ void setPause(HWND hWnd, bool _pause) {
 	pause = _pause;
 	HMENU cameraMenu = GetSubMenu(GetMenu(hWnd), 0);
 	ULONG check = pause ? MF_CHECKED : MF_UNCHECKED;
-	CheckMenuItem(cameraMenu, 1, check);
+	CheckMenuItem(cameraMenu, ID_PAUSE, check);
 }
 
 /**

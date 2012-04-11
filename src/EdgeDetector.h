@@ -6,6 +6,7 @@
 #include "RobertsOperator.h"
 #include "PrewittOperator.h"
 #include "SobelOperator.h"
+#include "ScharrOperator.h"
 
 
 /**
@@ -32,6 +33,7 @@ private:
 	const char* getWindowName();
 
 	bool isOriginalEffect, isGrayScaleEffect, isInverseEffect;
+	static int captureIndex;
 	AbstractOperator* edgeDetectOperator;
 	CvCapture* camera;
 	CvSize imageSize;

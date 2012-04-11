@@ -1,5 +1,7 @@
 #include "EdgeDetector.h"
 
+int EdgeDetector::captureIndex = 0;
+
 EdgeDetector::EdgeDetector() {}
 
 /**
@@ -57,7 +59,10 @@ void EdgeDetector::update() {
  */
 void EdgeDetector::snapshot() {
 	if (resultFrame == NULL) return;
-	cvSaveImage("Capture.jpg", resultFrame);
+	char filename[20];
+	sprintf(filename, "Capture%d.jpg", captureIndex);
+	captureIndex++;
+	cvSaveImage(filename, resultFrame);
 }
 
 /**
@@ -90,6 +95,9 @@ void EdgeDetector::setOperator(UINT typeOperator) {
 			break;
 		case ID_OP_SOBEL:
 			edgeDetectOperator = new SobelOperator();
+			break;
+		case ID_OP_SCHARR:
+			edgeDetectOperator = new ScharrOperator();
 			break;
 	}
 	edgeDetectOperator->createMatrix();

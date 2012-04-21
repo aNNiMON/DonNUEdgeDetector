@@ -4,12 +4,15 @@
  * Применить оператор поиска граней.
  */
 IplImage* AbstractOperator::applyOperator(IplImage* sourceImage) {
+	// Применение горизонтального фильтра выделения граней
 	IplImage* horizontalEdges = cvCloneImage(sourceImage);
 	cvFilter2D(sourceImage, horizontalEdges, horizontalMatrix, cvPoint(-1,-1));
 
+	// Применение вертикального фильтра выделения граней
 	IplImage* verticalEdges = cvCloneImage(sourceImage);
 	cvFilter2D(sourceImage, verticalEdges, verticalMatrix, cvPoint(-1,-1));
 
+	// Объединение двух изображений в одно (G = sqrt(Gx^2 + Gy^2))
 	horizontalEdges = applyGradient(horizontalEdges, verticalEdges);
 	cvReleaseImage(&sourceImage);
 	cvReleaseImage(&verticalEdges);
@@ -18,7 +21,7 @@ IplImage* AbstractOperator::applyOperator(IplImage* sourceImage) {
 
 /**
  * Создать матрицы свертки.
- **/
+ */
 void AbstractOperator::createMatrix() {
 	createHorizontalKernelMatrix();
 	createVerticalKernelMatrix();

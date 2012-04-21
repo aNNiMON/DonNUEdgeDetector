@@ -69,6 +69,7 @@ BEGIN
         MENUITEM "&Оригинал\tCtrl+O",           ID_EF_ORIGINAL
         MENUITEM "О&ттенки серого\tCtrl+G",     ID_EF_GRAYSCALE
         MENUITEM "&Негатив\tCtrl+I",            ID_EF_INVERSE
+        MENUITEM "Обво&дка граней\tCtrl+D",     ID_EF_STROKE
     END
     POPUP "&Справка"
     BEGIN
@@ -84,15 +85,16 @@ END
 
 IDR_MAINACCELERATOR ACCELERATORS
 BEGIN
-    "1",            ID_OP_ROBERTS,          VIRTKEY, NOINVERT
-    "2",            ID_OP_PREWITT,          VIRTKEY, NOINVERT
-    "3",            ID_OP_SOBEL,            VIRTKEY, NOINVERT
-    "4",            ID_OP_SCHARR,           VIRTKEY, NOINVERT
     "G",            ID_EF_GRAYSCALE,        VIRTKEY, CONTROL, NOINVERT
     "I",            ID_EF_INVERSE,          VIRTKEY, CONTROL, NOINVERT
     "O",            ID_EF_ORIGINAL,         VIRTKEY, CONTROL, NOINVERT
-    "P",            ID_PAUSE,               VIRTKEY, CONTROL, NOINVERT
+    "D",            ID_EF_STROKE,           VIRTKEY, CONTROL, NOINVERT
     VK_F4,          ID_EXIT,                VIRTKEY, ALT, NOINVERT
+    "2",            ID_OP_PREWITT,          VIRTKEY, NOINVERT
+    "1",            ID_OP_ROBERTS,          VIRTKEY, NOINVERT
+    "4",            ID_OP_SCHARR,           VIRTKEY, NOINVERT
+    "3",            ID_OP_SOBEL,            VIRTKEY, NOINVERT
+    "P",            ID_PAUSE,               VIRTKEY, CONTROL, NOINVERT
     VK_F9,          ID_SNAPSHOT,            VIRTKEY, NOINVERT
 END
 

@@ -33,6 +33,7 @@ private:
 	const char* getWindowName();
 
 	bool isOriginalEffect, isGrayScaleEffect, isInverseEffect;
+	bool isStrokeEffect;
 	static int captureIndex;
 	AbstractOperator* edgeDetectOperator;
 	CvCapture* camera;

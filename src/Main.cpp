@@ -80,11 +80,12 @@ LRESULT CALLBACK mainWindowProcedure(HWND hWnd, UINT message, UINT wParam, LONG 
 	switch(message)	{
 
 	case WM_CREATE:
+		SetClassLong(hWnd, GCL_HICON, (LONG) LoadIcon( GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1) ));
 		runningThread = true;
 		setPause(hWnd, false);
 		setOperatorType(hWnd, ID_OP_ROBERTS);
 		setEffectTypes(hWnd);
-		_beginthread(edgeDetectingThread, 0, NULL) ;
+		_beginthread(edgeDetectingThread, 0, NULL);
 		break;
 		
 	case WM_COMMAND:
@@ -114,6 +115,8 @@ BOOL CALLBACK AboutDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			ShellExecuteA(GetParent(hDlg), "open", "https://github.com/aNNiMON/DonNUEdgeDetector", NULL, NULL, SW_MAXIMIZE);
 			return TRUE;
 		case IDC_OK:
+		case IDOK:
+		case IDCANCEL:
 			EndDialog(hDlg, 0);
 			return TRUE;
 		}
@@ -131,7 +134,10 @@ void menuCommandSelected(HWND hWnd, UINT wParam) {
 	switch(command) {
 
 	case ID_SNAPSHOT:
+		// Для создания скриншота необходимо приостановить обработку фреймов 
+		setPause(hWnd, false);
 		detector.snapshot();
+		setPause(hWnd, pause);
 		break;
 
 	case ID_PAUSE:

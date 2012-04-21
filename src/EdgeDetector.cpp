@@ -43,8 +43,14 @@ void EdgeDetector::update() {
 	} else resultFrame = cvCloneImage(cameraFrame);
 
 	if (!isOriginalEffect) {
-		resultFrame = edgeDetectOperator->applyOperator(resultFrame);
+		if (isStrokeEffect) {
+			IplImage* tempFrame = cvCloneImage(resultFrame);
+			tempFrame = edgeDetectOperator->applyOperator(tempFrame);
+			cvSub(resultFrame, tempFrame, resultFrame);
+			cvReleaseImage(&tempFrame);
+		} else resultFrame = edgeDetectOperator->applyOperator(resultFrame);
 	}
+
 	if (isInverseEffect) {
 		IplImage* tempFrame = cvCloneImage(resultFrame);
 		cvNot(tempFrame, resultFrame);
@@ -78,6 +84,9 @@ void EdgeDetector::setEffects(UINT effect, bool enabled) {
 			break;
 		case ID_EF_INVERSE:
 			isInverseEffect = enabled;
+			break;
+		case ID_EF_STROKE:
+			isStrokeEffect = enabled;
 			break;
 	}
 }

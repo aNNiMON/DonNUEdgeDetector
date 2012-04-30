@@ -7,6 +7,9 @@
 #include "Window.h"
 #include "resource.h"
 #pragma comment(lib,"comctl32.lib")
+#pragma comment(linker,"\"/manifestdependency:type='win32' \
+name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
+processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 
 LRESULT CALLBACK mainWindowProcedure(HWND, UINT, UINT, LONG);
@@ -19,6 +22,8 @@ void setEffectTypes(HWND hWnd);
 bool effectsEnabled[EFFECTS_END - EFFECTS_START + 1];
 /** Детектор границ */
 EdgeDetector detector;
+/** Текущий метод оператор контуров */
+LPCWSTR operatorName;
 
 bool pause, runningThread;
 
@@ -87,6 +92,15 @@ LRESULT CALLBACK mainWindowProcedure(HWND hWnd, UINT message, UINT wParam, LONG 
 		setEffectTypes(hWnd);
 		_beginthread(edgeDetectingThread, 0, NULL);
 		break;
+
+	case WM_PAINT: {
+		PAINTSTRUCT PaintStruct;
+		RECT Rect;
+		HDC hDC = BeginPaint(hWnd, &PaintStruct);
+		GetClientRect(hWnd, &Rect);
+		DrawText(hDC, operatorName, -1, &Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+		EndPaint(hWnd, &PaintStruct);
+		} break;
 		
 	case WM_COMMAND:
 		menuCommandSelected(hWnd, wParam);
@@ -106,7 +120,7 @@ LRESULT CALLBACK mainWindowProcedure(HWND hWnd, UINT message, UINT wParam, LONG 
 /**
  * Обработка сообщений диалогового окна "О программе"
  */
-BOOL CALLBACK AboutDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+BOOL CALLBACK aboutDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
 	switch(message) {
 
 	case WM_COMMAND:
@@ -145,7 +159,7 @@ void menuCommandSelected(HWND hWnd, UINT wParam) {
 		break;
 
 	case ID_ABOUT:
-		DialogBox(NULL, MAKEINTRESOURCE(IDD_ABOUT_DIALOG), hWnd, (DLGPROC)AboutDialogProc);
+		DialogBox(NULL, MAKEINTRESOURCE(IDD_ABOUT_DIALOG), hWnd, (DLGPROC)aboutDialogProc);
 		break;
 
 	case ID_EXIT:
@@ -177,9 +191,18 @@ void setPause(HWND hWnd, bool _pause) {
  */
 void setOperatorType(HWND hWnd, UINT type) {
 	HMENU viewMenu = GetSubMenu(GetMenu(hWnd), 1);
-	CheckMenuRadioItem( viewMenu, OPERATORS_START, OPERATORS_END,
-						type, MF_BYCOMMAND );
+	CheckMenuRadioItem( viewMenu, OPERATORS_START, OPERATORS_END, type, MF_BYCOMMAND );
 	detector.setOperator(type);
+
+	LPCWSTR operatorNames[] = {
+		L"Оператор Робертса",
+		L"Оператор Прюитта",
+		L"Оператор Собеля",
+		L"Оператор Щарра"
+	};
+	int operatorIndex = type - OPERATORS_START;
+	operatorName = operatorNames[operatorIndex];
+	InvalidateRect(hWnd, NULL, true);
 }
 
 /**

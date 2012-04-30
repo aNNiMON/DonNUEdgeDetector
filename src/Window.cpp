@@ -2,7 +2,7 @@
 
 /**
  * Конструктор.
- * Задаёт стиль и размеры окна по умочанию.
+ * Задаёт стиль и размеры окна по умолчанию.
  */
 Window::Window() {
 	x = CW_USEDEFAULT;
@@ -13,14 +13,14 @@ Window::Window() {
 }
 
 /**
- * Установка класса окна.
+ * Установка имени класса окна.
  */
 void Window::setClassName(LPCWSTR className) {
 	this->className = className;
 }
 
 /**
- * Получение класса окна.
+ * Получение имени класса окна.
  */
 LPCWSTR Window::getClassName() {
 	return className;

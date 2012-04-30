@@ -2,7 +2,7 @@
 
 /**
  * Конструктор.
- * Задаёт параметры по умочанию.
+ * Задаёт параметры по умолчанию.
  */
 WindowClass::WindowClass() {
 	WndClass.cbClsExtra = 0;
@@ -23,7 +23,7 @@ bool WindowClass::registerClass() {
 }
 
 /**
- * Задать параметры по умочанию.
+ * Задать параметры по умолчанию.
  */
 void WindowClass::setToDefault() {
 	setStyle( CS_HREDRAW | CS_VREDRAW );
